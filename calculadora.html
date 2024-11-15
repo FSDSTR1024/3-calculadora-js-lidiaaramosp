@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora Simple</title>
+    <link rel="stylesheet" href="calculadora.css" />
+  </head>
+  <body>
+    <div class="calculator">
+      <div id="display" class="display">0</div>
+      <div class="buttons">
+        <button class="number" onclick="appendNumber('7')">7</button>
+        <button class="number" onclick="appendNumber('8')">8</button>
+        <button class="number" onclick="appendNumber('9')">9</button>
+        <button class="operator" onclick="setOperation('/')">÷</button>
+
+        <button class="number" onclick="appendNumber('4')">4</button>
+        <button class="number" onclick="appendNumber('5')">5</button>
+        <button class="number" onclick="appendNumber('6')">6</button>
+        <button class="operator" onclick="setOperation('*')">×</button>
+
+        <button class="number" onclick="appendNumber('1')">1</button>
+        <button class="number" onclick="appendNumber('2')">2</button>
+        <button class="number" onclick="appendNumber('3')">3</button>
+        <button class="operator" onclick="setOperation('-')">-</button>
+
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button class="number" onclick="appendNumber('0')">0</button>
+        <div class="empty"></div>
+        <button class="operator" onclick="setOperation('+')">+</button>
+
+        <button class="equal" onclick="calculate()">=</button>
+      </div>
+    </div>
+
+    <script>
+      let currentInput = "";
+      let previousInput = "";
+      let operation = null;
+      let isResultDisplayed = false;
+
+      function appendNumber(number) {
+        if (isResultDisplayed) {
+          currentInput = "";
+          isResultDisplayed = false;
+        }
+        if (currentInput === "0" && number === "0") return;
+        currentInput += number;
+        updateDisplay();
+      }
+
+      function setOperation(op) {
+        if (currentInput === "") return;
+        if (previousInput !== "" && !isResultDisplayed) calculate();
+        operation = op;
+        previousInput = currentInput;
+        currentInput = "";
+        isResultDisplayed = false;
+        updateDisplay();
+      }
+
+      function calculate() {
+        let result;
+        const prev = parseFloat(previousInput);
+        const curr = parseFloat(currentInput);
+        if (isNaN(prev) || isNaN(curr)) return;
+
+        switch (operation) {
+          case "+":
+            result = prev + curr;
+            break;
+          case "-":
+            result = prev - curr;
+            break;
+          case "*":
+            result = prev * curr;
+            break;
+          case "/":
+            result = curr !== 0 ? prev / curr : "Error";
+            break;
+          default:
+            return;
+        }
+
+        currentInput = result;
+        operation = null;
+        previousInput = "";
+        isResultDisplayed = true;
+        updateDisplay();
+      }
+
+      function updateDisplay() {
+        let displayValue = previousInput;
+        if (operation != null) displayValue += " " + operation;
+        if (currentInput !== "") displayValue += " " + currentInput;
+        document.getElementById("display").innerText = displayValue || "0";
+      }
+
+      function clearDisplay() {
+        currentInput = "";
+        previousInput = "";
+        operation = null;
+        isResultDisplayed = false;
+        updateDisplay();
+      }
+    </script>
+  </body>
+</html>
